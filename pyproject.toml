@@ -1,0 +1,9 @@
+[tool.uv.workspace]
+members = [
+    "api",
+    "cli",
+]
+
+
+[dependency-groups]
+dev = ["pytest", "httpx"]
