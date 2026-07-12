@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     postgres_host: str = "localhost"
     postgres_port: int = 5432
     db_echo: bool = False
+    test_database_url: str
 
     @property
     def database_url(self) -> URL:

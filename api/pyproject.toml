@@ -26,3 +26,6 @@ build-backend = "uv_build"
 dev = [
     "pyright>=1.1.411",
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
