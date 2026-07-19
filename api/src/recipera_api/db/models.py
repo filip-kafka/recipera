@@ -1,10 +1,32 @@
 from datetime import datetime
 from decimal import Decimal
 
-from sqlalchemy import DateTime, ForeignKey, Numeric, String, Text, func
+from sqlalchemy import (
+    Column,
+    DateTime,
+    ForeignKey,
+    Integer,
+    Numeric,
+    String,
+    Table,
+    Text,
+    func,
+)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base
+
+recipe_tags = Table(
+    "recipe_tags",
+    Base.metadata,
+    Column(
+        "recipe_id",
+        Integer,
+        ForeignKey("recipes.id", ondelete="CASCADE"),
+        primary_key=True,
+    ),
+    Column("tag_id", Integer, ForeignKey("tags.id"), primary_key=True),
+)
 
 
 class Recipe(Base):
@@ -33,6 +55,10 @@ class Recipe(Base):
         order_by="RecipeIngredient.position",
         cascade="all, delete-orphan",
     )
+    tags: Mapped[list["Tag"]] = relationship(
+        secondary=recipe_tags,
+        back_populates="recipes",
+    )
 
     def __repr__(self) -> str:
         return f"<Recipe(id={self.id}, title={self.title})>"
@@ -58,6 +84,9 @@ class Ingredient(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(255), unique=True)
 
+    def __repr__(self) -> str:
+        return f"<Ingredient(id={self.id}, name={self.name})>"
+
 
 class RecipeIngredient(Base):
     __tablename__ = "recipe_ingredients"
@@ -73,3 +102,24 @@ class RecipeIngredient(Base):
 
     recipe: Mapped["Recipe"] = relationship(back_populates="ingredients")
     ingredient: Mapped["Ingredient"] = relationship()
+
+    def __repr__(self) -> str:
+        return (
+            f"<RecipeIngredient(id={self.id}, recipe={self.recipe_id}, "
+            f"ingredient={self.ingredient_id})>"
+        )
+
+
+class Tag(Base):
+    __tablename__ = "tags"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(255), unique=True)
+
+    recipes: Mapped[list["Recipe"]] = relationship(
+        secondary=recipe_tags,
+        back_populates="tags",
+    )
+
+    def __repr__(self) -> str:
+        return f"<Tag(id={self.id}, name={self.name})>"
