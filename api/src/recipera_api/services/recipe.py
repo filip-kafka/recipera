@@ -1,8 +1,17 @@
 from recipera_api.db.models import Recipe
 from recipera_api.schemas.recipe import RecipeCreate
-from recipera_api.services.slug import add_suffix, generate_slug
+from recipera_api.services.helpers import add_suffix, generate_slug
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
+
+
+def create_recipe_service_(db: Session, payload: RecipeCreate) -> Recipe:
+    # Resolve tags >> list[Tag] >> create_or_get for each
+    # Resolve ingredients >> create or get for each ingredient name >> build RecipeIngredient with data
+    # Build list[Steps] with position from array order
+    # Construct Recipe with all the nested data attached + slug
+    # Atomic commit in slug-collision retry loop
+    ...
 
 
 def create_recipe_service(db: Session, payload: RecipeCreate) -> Recipe:

@@ -1,5 +1,5 @@
 import unicodedata
-from recipera_api.services.slug import add_suffix, generate_slug
+from recipera_api.services.helpers import add_suffix, generate_slug
 
 
 def test_transliteration():
